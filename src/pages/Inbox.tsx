@@ -88,6 +88,9 @@ export default function Inbox() {
   const selectedInquiry = inquiries.find((m) => m.id === selectedId);
   const filteredInquiries = activeChannel === "全部" ? inquiries : inquiries.filter((m) => m.channel === activeChannel);
   const currentChat = selectedId ? (conversations[selectedId] || []) : [];
+  const isEmail = selectedInquiry?.channel === "Email";
+  const isSocial = selectedInquiry?.channel === "Instagram" || selectedInquiry?.channel === "Facebook" || selectedInquiry?.channel === "Twitter";
+  const isWebsite = selectedInquiry?.channel === "独立站";
 
   const abortRef = useRef<AbortController | null>(null);
 
