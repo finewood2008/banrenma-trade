@@ -3,10 +3,11 @@
  */
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Check, X, Crown, Zap, Star,
   Bot, HardDrive, Coins, Headphones, Sparkles,
+  CreditCard, QrCode, Shield, Clock,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
