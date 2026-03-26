@@ -17,7 +17,11 @@ import AdsLayout from "./components/ads/AdsLayout";
 import AdsAccounts from "./pages/ads/AdsAccounts";
 import AdsDashboard from "./pages/ads/AdsDashboard";
 import AdsApprovals from "./pages/ads/AdsApprovals";
-import EmailMarketing from "./pages/EmailMarketing";
+import EmailLayout from "./components/email/EmailLayout";
+import EmailLists from "./pages/email/EmailLists";
+import EmailCreate from "./pages/email/EmailCreate";
+import EmailCampaigns from "./pages/email/EmailCampaigns";
+import EmailAnalytics from "./pages/email/EmailAnalytics";
 import Customers from "./pages/Customers";
 import Products from "./pages/Products";
 import NotFound from "./pages/NotFound";
@@ -48,7 +52,13 @@ const App = () => (
                 <Route path="dashboard" element={<AdsDashboard />} />
                 <Route path="approvals" element={<AdsApprovals />} />
               </Route>
-              <Route path="/email" element={<EmailMarketing />} />
+              <Route path="/email" element={<EmailLayout />}>
+                <Route index element={<Navigate to="lists" replace />} />
+                <Route path="lists" element={<EmailLists />} />
+                <Route path="create" element={<EmailCreate />} />
+                <Route path="campaigns" element={<EmailCampaigns />} />
+                <Route path="analytics" element={<EmailAnalytics />} />
+              </Route>
               <Route path="/customers" element={<Customers />} />
               <Route path="/products" element={<Products />} />
               <Route path="*" element={<NotFound />} />
