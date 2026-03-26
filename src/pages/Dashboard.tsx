@@ -12,6 +12,7 @@ import IntentChart from "@/components/dashboard/IntentChart";
 import ActivityFeed, { mockActivities } from "@/components/dashboard/ActivityFeed";
 import AIStrategyDrawer from "@/components/dashboard/AIStrategyDrawer";
 import ResponseTimeDialog from "@/components/dashboard/ResponseTimeDialog";
+import SatisfactionDialog from "@/components/dashboard/SatisfactionDialog";
 import InquiryTrendChart from "@/components/dashboard/InquiryTrendChart";
 
 const stagger = {
@@ -35,6 +36,7 @@ export default function Dashboard() {
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const [strategyDrawerOpen, setStrategyDrawerOpen] = useState(false);
   const [responseDialogOpen, setResponseDialogOpen] = useState(false);
+  const [satisfactionDialogOpen, setSatisfactionDialogOpen] = useState(false);
 
   // Simulate real-time refresh every 30s
   useEffect(() => {
@@ -75,7 +77,7 @@ export default function Dashboard() {
         setResponseDialogOpen(true);
         break;
       case "satisfaction":
-        toast({ title: "功能开发中", description: "详细数据面板即将上线" });
+        setSatisfactionDialogOpen(true);
         break;
     }
   }, [navigate]);
@@ -118,6 +120,7 @@ export default function Dashboard() {
       </motion.div>
       <AIStrategyDrawer open={strategyDrawerOpen} onOpenChange={setStrategyDrawerOpen} />
       <ResponseTimeDialog open={responseDialogOpen} onOpenChange={setResponseDialogOpen} />
+      <SatisfactionDialog open={satisfactionDialogOpen} onOpenChange={setSatisfactionDialogOpen} />
     </motion.div>
   );
 }
