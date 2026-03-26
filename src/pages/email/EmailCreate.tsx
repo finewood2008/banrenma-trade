@@ -248,39 +248,41 @@ Best regards,
 
       {step === 3 && (
         <>
-          <h3 className="font-display font-semibold text-sm">编辑邮件</h3>
-          <div className="space-y-2">
-            <Label className="text-xs">主题行</Label>
-            <Input value={subject} onChange={(e) => setSubject(e.target.value)} />
-            <div className="flex items-center gap-2 text-[10px]">
-              <span className="text-muted-foreground">AI预测打开率:</span>
-              <Badge variant="outline" className="text-brand-green border-brand-green/30 text-[10px] h-4">38% 🟢 高于行业平均21%</Badge>
+          <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+            <h3 className="font-display font-semibold text-sm">编辑邮件</h3>
+            <div className="space-y-2">
+              <Label className="text-xs">主题行</Label>
+              <Input value={subject} onChange={(e) => setSubject(e.target.value)} />
+              <div className="flex items-center gap-2 text-[10px]">
+                <span className="text-muted-foreground">AI预测打开率:</span>
+                <Badge variant="outline" className="text-brand-green border-brand-green/30 text-[10px] h-4">38% 🟢 高于行业平均21%</Badge>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs">邮件正文</Label>
+              <Textarea value={body} onChange={(e) => setBody(e.target.value)} className="min-h-[200px] text-xs font-mono" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-[10px] text-muted-foreground">个性化变量</Label>
+              <div className="flex gap-1.5 flex-wrap">
+                {["{{firstName}}", "{{companyName}}", "{{industry}}", "{{senderName}}"].map((v) => (
+                  <span key={v} className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary rounded">{v}</span>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <Button size="sm" variant="outline" onClick={() => setStep(2)}><ArrowLeft className="w-3.5 h-3.5 mr-1" /> 上一步</Button>
+              <div className="flex gap-2 flex-wrap justify-end">
+                <Button size="sm" variant="outline" onClick={handleGenerate}><RefreshCw className="w-3.5 h-3.5 mr-1" /> 重新生成</Button>
+                <Button size="sm" variant="outline" onClick={() => setPreviewOpen(true)}><Eye className="w-3.5 h-3.5 mr-1" /> 预览</Button>
+                <Button size="sm" variant="outline" onClick={handleSpamCheck} disabled={spamChecking}>
+                  {spamChecking ? <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> 检测中...</> : <><ShieldCheck className="w-3.5 h-3.5 mr-1" /> 垃圾邮件检测</>}
+                </Button>
+                <Button size="sm" onClick={() => setStep(4)}><ArrowRight className="w-3.5 h-3.5 ml-1" /> 下一步</Button>
+              </div>
             </div>
           </div>
-          <div className="space-y-2">
-            <Label className="text-xs">邮件正文</Label>
-            <Textarea value={body} onChange={(e) => setBody(e.target.value)} className="min-h-[200px] text-xs font-mono" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-[10px] text-muted-foreground">个性化变量</Label>
-            <div className="flex gap-1.5 flex-wrap">
-              {["{{firstName}}", "{{companyName}}", "{{industry}}", "{{senderName}}"].map((v) => (
-                <span key={v} className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary rounded">{v}</span>
-              ))}
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <Button size="sm" variant="outline" onClick={() => setStep(2)}><ArrowLeft className="w-3.5 h-3.5 mr-1" /> 上一步</Button>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={handleGenerate}><RefreshCw className="w-3.5 h-3.5 mr-1" /> 重新生成</Button>
-              <Button size="sm" variant="outline" onClick={() => setPreviewOpen(true)}><Eye className="w-3.5 h-3.5 mr-1" /> 预览</Button>
-              <Button size="sm" variant="outline" onClick={handleSpamCheck} disabled={spamChecking}>
-                {spamChecking ? <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> 检测中...</> : <><ShieldCheck className="w-3.5 h-3.5 mr-1" /> 垃圾邮件检测</>}
-              </Button>
-              <Button size="sm" onClick={() => setStep(4)}><ArrowRight className="w-3.5 h-3.5 ml-1" /> 下一步</Button>
-            </div>
-          </div>
-        </div>
+
           {/* Spam Score Panel */}
           {spamChecked && spamResult && (
             <div className="bg-card border border-border rounded-xl p-4 space-y-3">
@@ -335,6 +337,7 @@ Best regards,
               </div>
             </div>
           )}
+        </>
       )}
 
       {step === 4 && (
