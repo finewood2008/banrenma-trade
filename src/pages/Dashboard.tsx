@@ -14,6 +14,7 @@ import AIStrategyDrawer from "@/components/dashboard/AIStrategyDrawer";
 import ResponseTimeDialog from "@/components/dashboard/ResponseTimeDialog";
 import SatisfactionDialog from "@/components/dashboard/SatisfactionDialog";
 import InquiryTrendChart from "@/components/dashboard/InquiryTrendChart";
+import InquiryDialog from "@/components/dashboard/InquiryDialog";
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -37,6 +38,7 @@ export default function Dashboard() {
   const [strategyDrawerOpen, setStrategyDrawerOpen] = useState(false);
   const [responseDialogOpen, setResponseDialogOpen] = useState(false);
   const [satisfactionDialogOpen, setSatisfactionDialogOpen] = useState(false);
+  const [inquiryDialogOpen, setInquiryDialogOpen] = useState(false);
 
   // Simulate real-time refresh every 30s
   useEffect(() => {
@@ -68,7 +70,7 @@ export default function Dashboard() {
   const handleCardClick = useCallback((card: string) => {
     switch (card) {
       case "inquiries":
-        navigate("/inbox");
+        setInquiryDialogOpen(true);
         break;
       case "automation":
         setStrategyDrawerOpen(true);
@@ -121,6 +123,7 @@ export default function Dashboard() {
       <AIStrategyDrawer open={strategyDrawerOpen} onOpenChange={setStrategyDrawerOpen} />
       <ResponseTimeDialog open={responseDialogOpen} onOpenChange={setResponseDialogOpen} />
       <SatisfactionDialog open={satisfactionDialogOpen} onOpenChange={setSatisfactionDialogOpen} />
+      <InquiryDialog open={inquiryDialogOpen} onOpenChange={setInquiryDialogOpen} totalInquiries={stats.inquiries} />
     </motion.div>
   );
 }
