@@ -1,7 +1,7 @@
 /**
  * Customers - 客户管理 (本地化CRM)
  */
-import { useState } from "react";
+import { useState, useRef } from "react";
 import CustomerDistributionMap from "@/components/customers/CustomerDistributionMap";
 import {
   Users, Search, Filter, Star, Globe, Mail, Phone,
@@ -10,7 +10,7 @@ import {
   HardDrive, Download, RefreshCw, FileText, ChevronDown,
   ChevronUp, ChevronRight, Sparkles, AlertTriangle,
   Video, FileJson, Folder, File as FileIcon, ExternalLink,
-  Shield, X, Pencil, Save, Plus, Trash2,
+  Shield, X, Pencil, Save, Plus, Trash2, Upload, CheckCircle2, AlertCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -102,12 +102,77 @@ export default function Customers() {
   const [deals, setDeals] = useState(mockDeals);
   const [showAddDeal, setShowAddDeal] = useState(false);
   const [dealForm, setDealForm] = useState({ name: "", value: "", stage: "洽谈中", probability: 50 });
+  const [customerList, setCustomerList] = useState<Customer[]>(customers);
+  const [showImport, setShowImport] = useState(false);
+  const [importPreview, setImportPreview] = useState<Customer[]>([]);
+  const [importFileName, setImportFileName] = useState("");
+  const [isImporting, setIsImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const filtered = customers.filter((c) => {
+  const filtered = customerList.filter((c) => {
     const tierMatch = selectedTier === "all" || c.tier === selectedTier;
     const searchMatch = !searchQuery || c.name.toLowerCase().includes(searchQuery.toLowerCase()) || c.company.toLowerCase().includes(searchQuery.toLowerCase());
     return tierMatch && searchMatch;
   });
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImportFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const text = evt.target?.result as string;
+      if (!text) return;
+      const lines = text.split("\n").filter((l) => l.trim());
+      if (lines.length < 2) { toast.error("文件格式不正确，至少需要表头行和一行数据"); return; }
+      const headers = lines[0].split(",").map((h) => h.trim().toLowerCase().replace(/"/g, ""));
+      const nameIdx = headers.findIndex((h) => h.includes("name") || h.includes("姓名") || h.includes("客户"));
+      const companyIdx = headers.findIndex((h) => h.includes("company") || h.includes("公司"));
+      const emailIdx = headers.findIndex((h) => h.includes("email") || h.includes("邮箱"));
+      const phoneIdx = headers.findIndex((h) => h.includes("phone") || h.includes("电话"));
+      const countryIdx = headers.findIndex((h) => h.includes("country") || h.includes("国家"));
+      const tierIdx = headers.findIndex((h) => h.includes("tier") || h.includes("等级"));
+      if (nameIdx === -1) { toast.error("未找到\"姓名/Name\"列，请检查CSV表头"); return; }
+      const maxId = Math.max(...customerList.map((c) => c.id), 0);
+      const parsed: Customer[] = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(",").map((c) => c.trim().replace(/"/g, ""));
+        const name = cols[nameIdx];
+        if (!name) continue;
+        const tier = (tierIdx >= 0 ? cols[tierIdx]?.toUpperCase() : "C") as "A" | "B" | "C";
+        parsed.push({
+          id: maxId + i,
+          name,
+          company: companyIdx >= 0 ? cols[companyIdx] || "" : "",
+          email: emailIdx >= 0 ? cols[emailIdx] || "" : "",
+          phone: phoneIdx >= 0 ? cols[phoneIdx] || "" : "",
+          country: countryIdx >= 0 ? cols[countryIdx] || "" : "",
+          tier: ["A", "B", "C"].includes(tier) ? tier : "C",
+          aiScore: 0, totalOrders: 0, totalValue: "$0",
+          lastContact: "刚导入", channels: [], status: "nurturing",
+          tags: ["批量导入"],
+        });
+      }
+      if (parsed.length === 0) { toast.error("未解析到有效客户数据"); return; }
+      setImportPreview(parsed);
+      setShowImport(true);
+    };
+    reader.readAsText(file);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const confirmImport = () => {
+    setIsImporting(true);
+    setTimeout(() => {
+      setCustomerList((prev) => [...prev, ...importPreview]);
+      setIsImporting(false);
+      setShowImport(false);
+      setImportPreview([]);
+      toast.success(`成功导入 ${importPreview.length} 位客户`, {
+        description: `已保存到 ~/OPC/customers/ 目录`,
+      });
+    }, 1000);
+  };
 
   const openCustomer = (c: Customer) => {
     setSelectedCustomer(c);
@@ -185,6 +250,7 @@ export default function Customers() {
   const custId = selectedCustomer ? `CUST-20240315-${String(selectedCustomer.id).padStart(3, "0")}` : "";
 
   return (
+    <>
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
@@ -192,6 +258,10 @@ export default function Customers() {
           <p className="text-xs text-muted-foreground">Customer Agent · 360度客户画像与智能分级</p>
         </div>
         <div className="flex items-center gap-2">
+          <input type="file" ref={fileInputRef} accept=".csv,.xlsx,.xls" className="hidden" onChange={handleFileSelect} />
+          <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()}>
+            <Upload className="w-3.5 h-3.5 mr-1" /> 批量导入
+          </Button>
           <Button size="sm" variant="outline" onClick={() => toast.success("客户数据已导出到 ~/OPC/exports/customers-2026-03-27.xlsx")}>
             <Download className="w-3.5 h-3.5 mr-1" /> 导出数据
           </Button>
@@ -670,5 +740,73 @@ export default function Customers() {
         </SheetContent>
       </Sheet>
     </div>
+
+      {/* Import Preview Dialog */}
+      {showImport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+          <div className="bg-card border border-border rounded-xl shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-semibold flex items-center gap-2">
+                  <Upload className="w-4 h-4 text-primary" /> 批量导入客户
+                </h3>
+                <p className="text-[10px] text-muted-foreground mt-0.5">来源: {importFileName} · 解析到 {importPreview.length} 条记录</p>
+              </div>
+              <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => { setShowImport(false); setImportPreview([]); }}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-5 py-3">
+              <div className="rounded-lg border border-border overflow-hidden">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-border bg-secondary/30 text-muted-foreground">
+                      <th className="text-left px-3 py-2 font-medium">#</th>
+                      <th className="text-left px-3 py-2 font-medium">姓名</th>
+                      <th className="text-left px-3 py-2 font-medium">公司</th>
+                      <th className="text-left px-3 py-2 font-medium">邮箱</th>
+                      <th className="text-left px-3 py-2 font-medium">国家</th>
+                      <th className="text-left px-3 py-2 font-medium">等级</th>
+                      <th className="text-left px-3 py-2 font-medium">状态</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {importPreview.slice(0, 50).map((c, i) => (
+                      <tr key={i} className="hover:bg-secondary/20">
+                        <td className="px-3 py-1.5 text-muted-foreground">{i + 1}</td>
+                        <td className="px-3 py-1.5 font-medium">{c.name || <span className="text-destructive">缺失</span>}</td>
+                        <td className="px-3 py-1.5 text-muted-foreground">{c.company || "-"}</td>
+                        <td className="px-3 py-1.5 text-muted-foreground">{c.email || "-"}</td>
+                        <td className="px-3 py-1.5 text-muted-foreground">{c.country || "-"}</td>
+                        <td className="px-3 py-1.5">
+                          <span className={cn("text-[10px] px-1.5 py-0.5 rounded border font-bold", tierColors[c.tier])}>{c.tier}</span>
+                        </td>
+                        <td className="px-3 py-1.5">
+                          {c.name ? <CheckCircle2 className="w-3 h-3 text-brand-green" /> : <AlertCircle className="w-3 h-3 text-destructive" />}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {importPreview.length > 50 && (
+                <p className="text-[10px] text-muted-foreground text-center mt-2">仅显示前 50 条，共 {importPreview.length} 条</p>
+              )}
+            </div>
+            <div className="px-5 py-3 border-t border-border flex items-center justify-between">
+              <div className="text-[10px] text-muted-foreground">
+                导入后将保存到 ~/OPC/customers/ 目录
+              </div>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => { setShowImport(false); setImportPreview([]); }}>取消</Button>
+                <Button size="sm" onClick={confirmImport} disabled={isImporting}>
+                  {isImporting ? "导入中..." : `确认导入 ${importPreview.length} 位客户`}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
