@@ -366,9 +366,21 @@ Best regards,
               </div>
 
               <div className="border-t border-border pt-3">
-                <h5 className="text-xs font-semibold mb-2 flex items-center gap-1">
-                  <AlertTriangle className="w-3 h-3 text-primary" /> 改进建议
-                </h5>
+                <div className="flex items-center justify-between mb-2">
+                  <h5 className="text-xs font-semibold flex items-center gap-1">
+                    <AlertTriangle className="w-3 h-3 text-primary" /> 改进建议
+                  </h5>
+                  {spamResult.suggestions.length > 0 && (
+                    <Button size="sm" className="h-6 text-[10px] px-2.5" onClick={handleAutoFix} disabled={isFixing}>
+                      {isFixing ? <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> 修复中...</> : <><Wand2 className="w-3 h-3 mr-1" /> 一键修复</>}
+                    </Button>
+                  )}
+                </div>
+                {spamResult.suggestions.length === 0 ? (
+                  <div className="text-[11px] text-brand-green flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> 所有问题已修复，邮件内容已优化
+                  </div>
+                ) : (
                 <div className="space-y-1.5">
                   {spamResult.suggestions.map((s, i) => (
                     <div key={i} className="flex items-start gap-2 text-[11px] text-muted-foreground">
@@ -377,6 +389,7 @@ Best regards,
                     </div>
                   ))}
                 </div>
+                )}
               </div>
             </div>
           )}
