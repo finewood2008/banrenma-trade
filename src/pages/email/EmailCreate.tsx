@@ -274,6 +274,9 @@ Best regards,
             <div className="flex gap-2">
               <Button size="sm" variant="outline" onClick={handleGenerate}><RefreshCw className="w-3.5 h-3.5 mr-1" /> 重新生成</Button>
               <Button size="sm" variant="outline" onClick={() => setPreviewOpen(true)}><Eye className="w-3.5 h-3.5 mr-1" /> 预览</Button>
+              <Button size="sm" variant="outline" onClick={handleSpamCheck} disabled={spamChecking}>
+                {spamChecking ? <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> 检测中...</> : <><ShieldCheck className="w-3.5 h-3.5 mr-1" /> 垃圾邮件检测</>}
+              </Button>
               <Button size="sm" onClick={() => setStep(4)}><ArrowRight className="w-3.5 h-3.5 ml-1" /> 下一步</Button>
             </div>
           </div>
