@@ -28,6 +28,8 @@ export default function BillingSettings() {
   const [limitAction, setLimitAction] = useState<"pause_all" | "pause_auto" | "continue">("pause_auto");
   const [agentList, setAgentList] = useState(agents);
 
+  const navigate = useNavigate();
+
   const toggleAgent = (id: number) => {
     setAgentList(prev => prev.map(a => a.id === id ? { ...a, enabled: !a.enabled } : a));
   };
