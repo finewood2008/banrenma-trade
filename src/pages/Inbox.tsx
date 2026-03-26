@@ -185,8 +185,17 @@ export default function Inbox() {
   }, [generateAIReply]);
 
   const handleAdoptReply = useCallback(() => {
-    if (aiReply) { setMessageInput(aiReply); setAiReply(null); setTimeout(() => textareaRef.current?.focus(), 50); }
-  }, [aiReply]);
+    if (!aiReply) return;
+    if (isEmail && emailEditorRef.current) {
+      emailEditorRef.current.setContent(aiReply.replace(/\n/g, "<br>"));
+      setAiReply(null);
+      setTimeout(() => emailEditorRef.current?.focus(), 50);
+    } else {
+      setMessageInput(aiReply);
+      setAiReply(null);
+      setTimeout(() => textareaRef.current?.focus(), 50);
+    }
+  }, [aiReply, isEmail]);
 
   const handleSend = useCallback(() => {
     if (!messageInput.trim() || !selectedId) return;
