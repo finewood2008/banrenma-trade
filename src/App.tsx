@@ -27,6 +27,7 @@ import Products from "./pages/Products";
 import DataCenter from "./pages/data/DataCenter";
 import DataBackup from "./pages/data/DataBackup";
 import DataExport from "./pages/data/DataExport";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -68,6 +69,7 @@ const App = () => (
               <Route path="/data" element={<DataCenter />} />
               <Route path="/data/backup" element={<DataBackup />} />
               <Route path="/data/export" element={<DataExport />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </DashboardLayout>
