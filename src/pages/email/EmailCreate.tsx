@@ -2,7 +2,7 @@
  * EmailCreate - 创建邮件活动（4步流程）
  */
 import { useState } from "react";
-import { Sparkles, ArrowRight, ArrowLeft, Eye, Send, RefreshCw, Check, Monitor, Smartphone } from "lucide-react";
+import { Sparkles, ArrowRight, ArrowLeft, Eye, Send, RefreshCw, Check, Monitor, Smartphone, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -73,6 +74,43 @@ export default function EmailCreate() {
       .replace(/\{\{senderName\}\}/g, "Alex Wang");
     return filled;
   };
+
+  const [spamChecked, setSpamChecked] = useState(false);
+  const [spamChecking, setSpamChecking] = useState(false);
+  const [spamResult, setSpamResult] = useState<{
+    score: number;
+    checks: { name: string; status: "pass" | "warn" | "fail"; detail: string }[];
+    suggestions: string[];
+  } | null>(null);
+
+  const handleSpamCheck = async () => {
+    setSpamChecking(true);
+    await new Promise((r) => setTimeout(r, 1800));
+    setSpamResult({
+      score: 2.1,
+      checks: [
+        { name: "SPF记录", status: "pass", detail: "opcled.com 已配置SPF记录，授权发送服务器" },
+        { name: "DKIM签名", status: "pass", detail: "DKIM签名有效，密钥长度2048位" },
+        { name: "DMARC策略", status: "pass", detail: "DMARC策略设置为quarantine，对齐SPF/DKIM" },
+        { name: "发件人信誉", status: "pass", detail: "域名信誉良好，近30天退信率<1%" },
+        { name: "内容检测", status: "warn", detail: "检测到可能触发垃圾邮件过滤的短语" },
+        { name: "链接安全", status: "pass", detail: "所有链接均使用HTTPS，无黑名单域名" },
+        { name: "HTML/文本比例", status: "pass", detail: "纯文本邮件，比例良好" },
+        { name: "退订链接", status: "pass", detail: "包含退订链接，符合CAN-SPAM要求" },
+        { name: "主题行检测", status: "warn", detail: "主题行包含大写字母，部分邮箱可能标记" },
+      ],
+      suggestions: [
+        "避免在正文中使用\"save\"、\"discount\"等促销敏感词，改用更自然的表述",
+        "主题行建议避免全大写单词，改为首字母大写以降低垃圾邮件评分",
+        "建议添加发件人物理地址以完全符合CAN-SPAM法规",
+        "考虑使用个性化变量替代通用问候语，提升送达率",
+      ],
+    });
+    setSpamChecked(true);
+    setSpamChecking(false);
+    toast.success("垃圾邮件检测完成");
+  };
+
 
   const handleGenerate = async () => {
     setIsGenerating(true);
@@ -209,37 +247,97 @@ Best regards,
       )}
 
       {step === 3 && (
-        <div className="bg-card border border-border rounded-xl p-5 space-y-4">
-          <h3 className="font-display font-semibold text-sm">编辑邮件</h3>
-          <div className="space-y-2">
-            <Label className="text-xs">主题行</Label>
-            <Input value={subject} onChange={(e) => setSubject(e.target.value)} />
-            <div className="flex items-center gap-2 text-[10px]">
-              <span className="text-muted-foreground">AI预测打开率:</span>
-              <Badge variant="outline" className="text-brand-green border-brand-green/30 text-[10px] h-4">38% 🟢 高于行业平均21%</Badge>
+        <>
+          <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+            <h3 className="font-display font-semibold text-sm">编辑邮件</h3>
+            <div className="space-y-2">
+              <Label className="text-xs">主题行</Label>
+              <Input value={subject} onChange={(e) => setSubject(e.target.value)} />
+              <div className="flex items-center gap-2 text-[10px]">
+                <span className="text-muted-foreground">AI预测打开率:</span>
+                <Badge variant="outline" className="text-brand-green border-brand-green/30 text-[10px] h-4">38% 🟢 高于行业平均21%</Badge>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs">邮件正文</Label>
+              <Textarea value={body} onChange={(e) => setBody(e.target.value)} className="min-h-[200px] text-xs font-mono" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-[10px] text-muted-foreground">个性化变量</Label>
+              <div className="flex gap-1.5 flex-wrap">
+                {["{{firstName}}", "{{companyName}}", "{{industry}}", "{{senderName}}"].map((v) => (
+                  <span key={v} className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary rounded">{v}</span>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <Button size="sm" variant="outline" onClick={() => setStep(2)}><ArrowLeft className="w-3.5 h-3.5 mr-1" /> 上一步</Button>
+              <div className="flex gap-2 flex-wrap justify-end">
+                <Button size="sm" variant="outline" onClick={handleGenerate}><RefreshCw className="w-3.5 h-3.5 mr-1" /> 重新生成</Button>
+                <Button size="sm" variant="outline" onClick={() => setPreviewOpen(true)}><Eye className="w-3.5 h-3.5 mr-1" /> 预览</Button>
+                <Button size="sm" variant="outline" onClick={handleSpamCheck} disabled={spamChecking}>
+                  {spamChecking ? <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> 检测中...</> : <><ShieldCheck className="w-3.5 h-3.5 mr-1" /> 垃圾邮件检测</>}
+                </Button>
+                <Button size="sm" onClick={() => setStep(4)}><ArrowRight className="w-3.5 h-3.5 ml-1" /> 下一步</Button>
+              </div>
             </div>
           </div>
-          <div className="space-y-2">
-            <Label className="text-xs">邮件正文</Label>
-            <Textarea value={body} onChange={(e) => setBody(e.target.value)} className="min-h-[200px] text-xs font-mono" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-[10px] text-muted-foreground">个性化变量</Label>
-            <div className="flex gap-1.5 flex-wrap">
-              {["{{firstName}}", "{{companyName}}", "{{industry}}", "{{senderName}}"].map((v) => (
-                <span key={v} className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary rounded">{v}</span>
-              ))}
+
+          {/* Spam Score Panel */}
+          {spamChecked && spamResult && (
+            <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="font-display font-semibold text-sm flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-brand-green" /> 垃圾邮件检测报告
+                </h4>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">垃圾邮件评分:</span>
+                  <span className={cn("text-sm font-bold", spamResult.score <= 3 ? "text-brand-green" : spamResult.score <= 5 ? "text-primary" : "text-destructive")}>
+                    {spamResult.score}/10
+                  </span>
+                  <Badge variant="outline" className={cn("text-[10px] h-4",
+                    spamResult.score <= 3 ? "text-brand-green border-brand-green/30" : "text-primary border-primary/30"
+                  )}>
+                    {spamResult.score <= 3 ? "优秀 - 送达率高" : spamResult.score <= 5 ? "一般 - 需要优化" : "较差 - 可能被拦截"}
+                  </Badge>
+                </div>
+              </div>
+              <Progress value={(10 - spamResult.score) * 10} className="h-1.5" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+                {spamResult.checks.map((check, i) => (
+                  <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-secondary/20 text-xs">
+                    {check.status === "pass" ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-brand-green shrink-0 mt-0.5" />
+                    ) : check.status === "warn" ? (
+                      <AlertTriangle className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                    ) : (
+                      <XCircle className="w-3.5 h-3.5 text-destructive shrink-0 mt-0.5" />
+                    )}
+                    <div>
+                      <div className="font-medium">{check.name}</div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5">{check.detail}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t border-border pt-3">
+                <h5 className="text-xs font-semibold mb-2 flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3 text-primary" /> 改进建议
+                </h5>
+                <div className="space-y-1.5">
+                  {spamResult.suggestions.map((s, i) => (
+                    <div key={i} className="flex items-start gap-2 text-[11px] text-muted-foreground">
+                      <span className="text-primary font-bold shrink-0">{i + 1}.</span>
+                      <span>{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex justify-between">
-            <Button size="sm" variant="outline" onClick={() => setStep(2)}><ArrowLeft className="w-3.5 h-3.5 mr-1" /> 上一步</Button>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={handleGenerate}><RefreshCw className="w-3.5 h-3.5 mr-1" /> 重新生成</Button>
-              <Button size="sm" variant="outline" onClick={() => setPreviewOpen(true)}><Eye className="w-3.5 h-3.5 mr-1" /> 预览</Button>
-              <Button size="sm" onClick={() => setStep(4)}><ArrowRight className="w-3.5 h-3.5 ml-1" /> 下一步</Button>
-            </div>
-          </div>
-        </div>
+          )}
+        </>
       )}
 
       {step === 4 && (
