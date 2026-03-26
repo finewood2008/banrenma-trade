@@ -247,7 +247,7 @@ Best regards,
       )}
 
       {step === 3 && (
-        <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+        <>
           <h3 className="font-display font-semibold text-sm">编辑邮件</h3>
           <div className="space-y-2">
             <Label className="text-xs">主题行</Label>
