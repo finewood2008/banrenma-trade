@@ -75,7 +75,43 @@ export default function EmailCreate() {
     return filled;
   };
 
-  const handleGenerate = async () => {
+  const [spamChecked, setSpamChecked] = useState(false);
+  const [spamChecking, setSpamChecking] = useState(false);
+  const [spamResult, setSpamResult] = useState<{
+    score: number;
+    checks: { name: string; status: "pass" | "warn" | "fail"; detail: string }[];
+    suggestions: string[];
+  } | null>(null);
+
+  const handleSpamCheck = async () => {
+    setSpamChecking(true);
+    await new Promise((r) => setTimeout(r, 1800));
+    setSpamResult({
+      score: 2.1,
+      checks: [
+        { name: "SPF记录", status: "pass", detail: "opcled.com 已配置SPF记录，授权发送服务器" },
+        { name: "DKIM签名", status: "pass", detail: "DKIM签名有效，密钥长度2048位" },
+        { name: "DMARC策略", status: "pass", detail: "DMARC策略设置为quarantine，对齐SPF/DKIM" },
+        { name: "发件人信誉", status: "pass", detail: "域名信誉良好，近30天退信率<1%" },
+        { name: "内容检测", status: "warn", detail: "检测到可能触发垃圾邮件过滤的短语" },
+        { name: "链接安全", status: "pass", detail: "所有链接均使用HTTPS，无黑名单域名" },
+        { name: "HTML/文本比例", status: "pass", detail: "纯文本邮件，比例良好" },
+        { name: "退订链接", status: "pass", detail: "包含退订链接，符合CAN-SPAM要求" },
+        { name: "主题行检测", status: "warn", detail: "主题行包含大写字母，部分邮箱可能标记" },
+      ],
+      suggestions: [
+        "避免在正文中使用\"save\"、\"discount\"等促销敏感词，改用更自然的表述",
+        "主题行建议避免全大写单词，改为首字母大写以降低垃圾邮件评分",
+        "建议添加发件人物理地址以完全符合CAN-SPAM法规",
+        "考虑使用个性化变量替代通用问候语，提升送达率",
+      ],
+    });
+    setSpamChecked(true);
+    setSpamChecking(false);
+    toast.success("垃圾邮件检测完成");
+  };
+
+
     setIsGenerating(true);
     await new Promise((r) => setTimeout(r, 2000));
     setSubject("5 Year Warranty LED Bulbs - Factory Direct Pricing");
