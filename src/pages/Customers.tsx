@@ -102,6 +102,8 @@ export default function Customers() {
   const [deals, setDeals] = useState(mockDeals);
   const [showAddDeal, setShowAddDeal] = useState(false);
   const [dealForm, setDealForm] = useState({ name: "", value: "", stage: "洽谈中", probability: 50 });
+  const [editingDealId, setEditingDealId] = useState<number | null>(null);
+  const [editDealForm, setEditDealForm] = useState({ stage: "", probability: 0 });
   const [customerList, setCustomerList] = useState<Customer[]>(customers);
   const [showImport, setShowImport] = useState(false);
   const [importPreview, setImportPreview] = useState<Customer[]>([]);
@@ -655,13 +657,56 @@ export default function Customers() {
 
                   <div className="space-y-2">
                     {deals.map((deal) => (
-                      <div key={deal.id} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/20 text-xs">
-                        <div className="flex-1">
-                          <div className="font-medium">{deal.name}</div>
-                          <div className="text-[10px] text-muted-foreground mt-0.5">{deal.stage} · 成功率 {deal.probability}%</div>
-                        </div>
-                        <span className="font-bold text-primary">{deal.value}</span>
-                        <Progress value={deal.probability} className="w-16 h-1" />
+                      <div key={deal.id} className="p-2 rounded-lg bg-secondary/20 text-xs">
+                        {editingDealId === deal.id ? (
+                          <div className="space-y-2">
+                            <div className="font-medium text-[11px]">{deal.name} <span className="text-muted-foreground font-normal">· {deal.value}</span></div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div>
+                                <label className="text-[10px] text-muted-foreground">阶段</label>
+                                <Select value={editDealForm.stage} onValueChange={(v) => setEditDealForm({ ...editDealForm, stage: v })}>
+                                  <SelectTrigger className="h-7 text-xs mt-0.5"><SelectValue /></SelectTrigger>
+                                  <SelectContent>
+                                    {["洽谈中", "报价中", "样品确认", "合同签订", "已成交", "已关闭"].map((s) => (
+                                      <SelectItem key={s} value={s} className="text-xs">{s}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div>
+                                <label className="text-[10px] text-muted-foreground">成功率: {editDealForm.probability}%</label>
+                                <input type="range" min={0} max={100} step={5} value={editDealForm.probability} onChange={(e) => setEditDealForm({ ...editDealForm, probability: Number(e.target.value) })} className="w-full h-1.5 mt-2 accent-primary" />
+                              </div>
+                            </div>
+                            <div className="flex gap-2 justify-end">
+                              <Button size="sm" variant="ghost" className="h-6 text-[10px]" onClick={() => setEditingDealId(null)}>取消</Button>
+                              <Button size="sm" className="h-6 text-[10px]" onClick={() => {
+                                setDeals((prev) => prev.map((d) => d.id === deal.id ? { ...d, stage: editDealForm.stage, probability: editDealForm.probability } : d));
+                                setEditingDealId(null);
+                                toast.success("商机已更新");
+                              }}>
+                                <Save className="w-3 h-3 mr-0.5" /> 保存
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-3">
+                            <div className="flex-1">
+                              <div className="font-medium">{deal.name}</div>
+                              <div className="text-[10px] text-muted-foreground mt-0.5">
+                                {deal.stage} · 成功率 {deal.probability}%
+                              </div>
+                            </div>
+                            <span className="font-bold text-primary">{deal.value}</span>
+                            <Progress value={deal.probability} className="w-16 h-1" />
+                            <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={() => { setEditingDealId(deal.id); setEditDealForm({ stage: deal.stage, probability: deal.probability }); }}>
+                              <Pencil className="w-3 h-3" />
+                            </Button>
+                            <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-destructive hover:text-destructive" onClick={() => { setDeals((prev) => prev.filter((d) => d.id !== deal.id)); toast.success(`已删除商机: ${deal.name}`); }}>
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
