@@ -27,6 +27,7 @@ import Products from "./pages/Products";
 import DataCenter from "./pages/data/DataCenter";
 import DataBackup from "./pages/data/DataBackup";
 import DataExport from "./pages/data/DataExport";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
