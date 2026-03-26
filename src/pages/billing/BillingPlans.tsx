@@ -480,6 +480,11 @@ export default function BillingPlans() {
           ))}
         </CardContent>
       </Card>
+
+      {/* Payment dialog */}
+      <AnimatePresence>
+        {payingPlan && <PaymentDialog plan={payingPlan} yearly={yearly} onClose={() => setPayingPlan(null)} />}
+      </AnimatePresence>
     </div>
   );
 }
