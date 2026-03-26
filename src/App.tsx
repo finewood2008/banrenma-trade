@@ -52,7 +52,13 @@ const App = () => (
                 <Route path="dashboard" element={<AdsDashboard />} />
                 <Route path="approvals" element={<AdsApprovals />} />
               </Route>
-              <Route path="/email" element={<EmailMarketing />} />
+              <Route path="/email" element={<EmailLayout />}>
+                <Route index element={<Navigate to="lists" replace />} />
+                <Route path="lists" element={<EmailLists />} />
+                <Route path="create" element={<EmailCreate />} />
+                <Route path="campaigns" element={<EmailCampaigns />} />
+                <Route path="analytics" element={<EmailAnalytics />} />
+              </Route>
               <Route path="/customers" element={<Customers />} />
               <Route path="/products" element={<Products />} />
               <Route path="*" element={<NotFound />} />
