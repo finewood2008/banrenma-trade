@@ -281,6 +281,61 @@ Best regards,
             </div>
           </div>
         </div>
+
+          {/* Spam Score Panel */}
+          {spamChecked && spamResult && (
+            <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="font-display font-semibold text-sm flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-brand-green" /> 垃圾邮件检测报告
+                </h4>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">垃圾邮件评分:</span>
+                  <span className={cn("text-sm font-bold", spamResult.score <= 3 ? "text-brand-green" : spamResult.score <= 5 ? "text-primary" : "text-destructive")}>
+                    {spamResult.score}/10
+                  </span>
+                  <Badge variant="outline" className={cn("text-[10px] h-4",
+                    spamResult.score <= 3 ? "text-brand-green border-brand-green/30" : "text-primary border-primary/30"
+                  )}>
+                    {spamResult.score <= 3 ? "优秀 - 送达率高" : spamResult.score <= 5 ? "一般 - 需要优化" : "较差 - 可能被拦截"}
+                  </Badge>
+                </div>
+              </div>
+              <Progress value={(10 - spamResult.score) * 10} className="h-1.5" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+                {spamResult.checks.map((check, i) => (
+                  <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-secondary/20 text-xs">
+                    {check.status === "pass" ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-brand-green shrink-0 mt-0.5" />
+                    ) : check.status === "warn" ? (
+                      <AlertTriangle className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                    ) : (
+                      <XCircle className="w-3.5 h-3.5 text-destructive shrink-0 mt-0.5" />
+                    )}
+                    <div>
+                      <div className="font-medium">{check.name}</div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5">{check.detail}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t border-border pt-3">
+                <h5 className="text-xs font-semibold mb-2 flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3 text-primary" /> 改进建议
+                </h5>
+                <div className="space-y-1.5">
+                  {spamResult.suggestions.map((s, i) => (
+                    <div key={i} className="flex items-start gap-2 text-[11px] text-muted-foreground">
+                      <span className="text-primary font-bold shrink-0">{i + 1}.</span>
+                      <span>{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
       )}
 
       {step === 4 && (
