@@ -12,6 +12,7 @@ import IntentChart from "@/components/dashboard/IntentChart";
 import ActivityFeed, { mockActivities } from "@/components/dashboard/ActivityFeed";
 import AIStrategyDrawer from "@/components/dashboard/AIStrategyDrawer";
 import ResponseTimeDialog from "@/components/dashboard/ResponseTimeDialog";
+import SatisfactionDialog from "@/components/dashboard/SatisfactionDialog";
 import InquiryTrendChart from "@/components/dashboard/InquiryTrendChart";
 
 const stagger = {
