@@ -71,6 +71,8 @@ export default function Dashboard() {
         setStrategyDrawerOpen(true);
         break;
       case "response":
+        setResponseDialogOpen(true);
+        break;
       case "satisfaction":
         toast({ title: "功能开发中", description: "详细数据面板即将上线" });
         break;
