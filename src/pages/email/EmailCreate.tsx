@@ -265,7 +265,7 @@ Best regards,
           <div className="space-y-1.5 pt-2">
             <Label className="text-xs text-muted-foreground">自动化规则</Label>
             <div className="space-y-1 text-xs">
-              {["如果回复任何邮件，停止序列并通知销售", "如果退订，立即停止并从列表移除", "如果点击链接，标记为"高意向""].map((rule, i) => (
+              {["如果回复任何邮件，停止序列并通知销售", "如果退订，立即停止并从列表移除", "如果点击链接，标记为「高意向」"].map((rule, i) => (
                 <label key={i} className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" defaultChecked className="accent-[hsl(var(--primary))] w-3 h-3" />
                   <span className="text-muted-foreground">{rule}</span>
