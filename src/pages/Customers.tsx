@@ -9,7 +9,7 @@ import {
   HardDrive, Download, RefreshCw, FileText, ChevronDown,
   ChevronUp, ChevronRight, Sparkles, AlertTriangle,
   Video, FileJson, Folder, File as FileIcon, ExternalLink,
-  Shield, X,
+  Shield, X, Pencil, Save, Plus, Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
