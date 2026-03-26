@@ -143,6 +143,107 @@ export default function EmailAnalytics() {
             </ResponsiveContainer>
           </div>
 
+          {/* A/B Test Section */}
+          <div className="bg-card border border-border rounded-xl">
+            <div className="px-4 py-3 border-b border-border flex items-center gap-1.5">
+              <FlaskConical className="w-3.5 h-3.5 text-primary" />
+              <h3 className="font-display font-semibold text-sm">A/B 测试对比</h3>
+            </div>
+            <div className="divide-y divide-border">
+              {abTests.map((test) => {
+                const s = abStatusConfig[test.status];
+                const chartData = test.variants.map((v) => ({
+                  name: `版本 ${v.name}`,
+                  openRate: v.openRate,
+                  clickRate: v.clickRate,
+                  replyRate: v.replyRate,
+                }));
+                const winner = test.variants.find((v) => v.isWinner);
+                return (
+                  <div key={test.id} className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-xs font-semibold">{test.campaign}</div>
+                        <div className="text-[10px] text-muted-foreground mt-0.5">开始: {test.startDate} · 样本: {test.sampleSize}封</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={cn("text-[10px] px-1.5 py-0.5 rounded", s.className)}>{s.label}</span>
+                        {test.status === "completed" && winner && (
+                          <Badge variant="outline" className="text-[10px] h-4 text-primary border-primary/30 flex items-center gap-0.5">
+                            <Trophy className="w-2.5 h-2.5" /> 版本{winner.name}胜出
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Variant comparison */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {test.variants.map((v) => (
+                        <div key={v.name} className={cn("rounded-lg p-3 border text-xs space-y-2",
+                          v.isWinner ? "border-brand-green/40 bg-brand-green/5" : "border-border bg-secondary/20"
+                        )}>
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold flex items-center gap-1">
+                              版本 {v.name}
+                              {v.isWinner && <Trophy className="w-3 h-3 text-brand-green" />}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground">{v.sent}封</span>
+                          </div>
+                          <div className="text-[10px] text-muted-foreground italic truncate" title={v.subject}>
+                            &ldquo;{v.subject}&rdquo;
+                          </div>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-muted-foreground">打开率</span>
+                              <span className="font-bold">{v.openRate}%</span>
+                            </div>
+                            <Progress value={v.openRate} className="h-1" />
+                            <div className="flex items-center justify-between">
+                              <span className="text-muted-foreground">点击率</span>
+                              <span className="font-bold">{v.clickRate}%</span>
+                            </div>
+                            <Progress value={v.clickRate * 2} className="h-1" />
+                            <div className="flex items-center justify-between">
+                              <span className="text-muted-foreground">回复率</span>
+                              <span className="font-bold">{v.replyRate}%</span>
+                            </div>
+                            <Progress value={v.replyRate * 5} className="h-1" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Confidence */}
+                    <div className="flex items-center gap-2 text-[10px]">
+                      <span className="text-muted-foreground">统计置信度:</span>
+                      <div className="flex-1 max-w-32">
+                        <Progress value={test.confidence} className="h-1" />
+                      </div>
+                      <span className={cn("font-bold", test.confidence >= 95 ? "text-brand-green" : "text-primary")}>{test.confidence}%</span>
+                      {test.confidence >= 95 ? (
+                        <span className="text-brand-green">✓ 结果可靠</span>
+                      ) : (
+                        <span className="text-primary">需要更多数据</span>
+                      )}
+                    </div>
+
+                    {/* Bar chart comparison */}
+                    <ResponsiveContainer width="100%" height={100}>
+                      <BarChart data={chartData} barGap={4}>
+                        <XAxis dataKey="name" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                        <YAxis tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} unit="%" />
+                        <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11 }} />
+                        <Bar dataKey="openRate" name="打开率" fill="hsl(var(--brand-cyan))" radius={[3, 3, 0, 0]} />
+                        <Bar dataKey="clickRate" name="点击率" fill="hsl(var(--brand-green))" radius={[3, 3, 0, 0]} />
+                        <Bar dataKey="replyRate" name="回复率" fill="hsl(var(--primary))" radius={[3, 3, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           <div className="bg-card border border-border rounded-xl">
             <div className="px-4 py-3 border-b border-border">
               <h3 className="font-display font-semibold text-sm">邮件活动表现排行</h3>
