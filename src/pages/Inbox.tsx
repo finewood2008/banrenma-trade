@@ -83,6 +83,7 @@ export default function Inbox() {
   const [aiConfidence, setAiConfidence] = useState(0);
   const [conversations, setConversations] = useState<Record<number, ChatMessage[]>>(mockConversations);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const emailEditorRef = useRef<EmailRichEditorRef>(null);
 
   const selectedInquiry = inquiries.find((m) => m.id === selectedId);
   const filteredInquiries = activeChannel === "全部" ? inquiries : inquiries.filter((m) => m.channel === activeChannel);
