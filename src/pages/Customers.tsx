@@ -102,6 +102,12 @@ export default function Customers() {
   const [deals, setDeals] = useState(mockDeals);
   const [showAddDeal, setShowAddDeal] = useState(false);
   const [dealForm, setDealForm] = useState({ name: "", value: "", stage: "洽谈中", probability: 50 });
+  const [customerList, setCustomerList] = useState<Customer[]>(customers);
+  const [showImport, setShowImport] = useState(false);
+  const [importPreview, setImportPreview] = useState<Customer[]>([]);
+  const [importFileName, setImportFileName] = useState("");
+  const [isImporting, setIsImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filtered = customers.filter((c) => {
     const tierMatch = selectedTier === "all" || c.tier === selectedTier;
