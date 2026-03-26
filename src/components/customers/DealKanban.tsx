@@ -118,13 +118,6 @@ export default function DealKanban({ onDealClick }: { onDealClick?: (deal: Kanba
 
   const isFiltered = tierFilter.size < 3 || valueRange[0] > 0 || valueRange[1] < 50000;
 
-  const totalValue = (stageKey: string) => {
-    const sum = stageDeals(stageKey).reduce((acc, d) => {
-      const num = parseFloat(d.value.replace(/[$,]/g, ""));
-      return acc + (isNaN(num) ? 0 : num);
-    }, 0);
-    return sum >= 1000 ? `$${(sum / 1000).toFixed(1)}K` : `$${sum}`;
-  };
 
   return (
     <div className="space-y-3">
