@@ -1,13 +1,14 @@
 /**
  * DealKanban - 商机看板视图，按阶段分列展示，支持拖拽切换阶段
  */
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import {
-  DollarSign, GripVertical, User, Building2, TrendingUp,
+  DollarSign, GripVertical, User, Building2, TrendingUp, Filter,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 
 interface KanbanDeal {
@@ -56,6 +57,30 @@ export default function DealKanban({ onDealClick }: { onDealClick?: (deal: Kanba
   const [dragOverStage, setDragOverStage] = useState<string | null>(null);
   const [highlightedDealId, setHighlightedDealId] = useState<string | null>(null);
 
+  // Filters
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [tierFilter, setTierFilter] = useState<Set<string>>(new Set(["A", "B", "C"]));
+  const [valueRange, setValueRange] = useState<[number, number]>([0, 50000]);
+
+  const parseValue = (v: string) => parseFloat(v.replace(/[$,]/g, "")) || 0;
+
+  const filteredDeals = useMemo(() => {
+    return deals.filter((d) => {
+      if (!tierFilter.has(d.tier)) return false;
+      const num = parseValue(d.value);
+      return num >= valueRange[0] && num <= valueRange[1];
+    });
+  }, [deals, tierFilter, valueRange]);
+
+  const toggleTier = (t: string) => {
+    setTierFilter((prev) => {
+      const next = new Set(prev);
+      if (next.has(t)) { if (next.size > 1) next.delete(t); }
+      else next.add(t);
+      return next;
+    });
+  };
+
   const handleDragStart = useCallback((dealId: string) => {
     dragItem.current = dealId;
   }, []);
@@ -84,31 +109,88 @@ export default function DealKanban({ onDealClick }: { onDealClick?: (deal: Kanba
     setDragOverStage(null);
   }, []);
 
-  const stageDeals = (stageKey: string) => deals.filter((d) => d.stage === stageKey);
+  const stageDeals = (stageKey: string) => filteredDeals.filter((d) => d.stage === stageKey);
 
   const totalValue = (stageKey: string) => {
-    const sum = stageDeals(stageKey).reduce((acc, d) => {
-      const num = parseFloat(d.value.replace(/[$,]/g, ""));
-      return acc + (isNaN(num) ? 0 : num);
-    }, 0);
+    const sum = stageDeals(stageKey).reduce((acc, d) => acc + parseValue(d.value), 0);
     return sum >= 1000 ? `$${(sum / 1000).toFixed(1)}K` : `$${sum}`;
   };
 
+  const isFiltered = tierFilter.size < 3 || valueRange[0] > 0 || valueRange[1] < 50000;
+
+
   return (
     <div className="space-y-3">
-      {/* Summary bar */}
-      <div className="flex items-center gap-4 text-xs">
+      {/* Summary bar + Filter toggle */}
+      <div className="flex items-center gap-4 text-xs flex-wrap">
         <span className="text-muted-foreground">
-          共 <strong className="text-foreground">{deals.length}</strong> 个商机
+          共 <strong className="text-foreground">{filteredDeals.length}</strong>{isFiltered ? `/${deals.length}` : ""} 个商机
         </span>
         <span className="text-muted-foreground">
-          总金额 <strong className="text-primary">${deals.reduce((a, d) => a + parseFloat(d.value.replace(/[$,]/g, "") || "0"), 0).toLocaleString()}</strong>
+          总金额 <strong className="text-primary">${filteredDeals.reduce((a, d) => a + parseValue(d.value), 0).toLocaleString()}</strong>
         </span>
         <span className="text-muted-foreground flex items-center gap-1">
           <TrendingUp className="w-3 h-3 text-brand-green" />
-          加权金额 <strong className="text-brand-green">${Math.round(deals.reduce((a, d) => a + parseFloat(d.value.replace(/[$,]/g, "") || "0") * d.probability / 100, 0)).toLocaleString()}</strong>
+          加权金额 <strong className="text-brand-green">${Math.round(filteredDeals.reduce((a, d) => a + parseValue(d.value) * d.probability / 100, 0)).toLocaleString()}</strong>
         </span>
+        <button
+          onClick={() => setFilterOpen((v) => !v)}
+          className={cn(
+            "ml-auto flex items-center gap-1 px-2 py-1 rounded-md text-xs border transition-colors",
+            isFiltered
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <Filter className="w-3 h-3" />
+          筛选{isFiltered ? " ·" : ""}
+        </button>
       </div>
+
+      {/* Filter panel */}
+      {filterOpen && (
+        <div className="flex items-center gap-6 p-3 rounded-lg border border-border bg-card text-xs flex-wrap">
+          {/* Tier filter */}
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground font-medium">客户等级:</span>
+            {(["A", "B", "C"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => toggleTier(t)}
+                className={cn(
+                  "px-2 py-0.5 rounded border font-bold text-[10px] transition-colors",
+                  tierFilter.has(t) ? tierColors[t] : "bg-muted/30 text-muted-foreground/50 border-border"
+                )}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+          {/* Value range */}
+          <div className="flex items-center gap-3 flex-1 min-w-[200px]">
+            <span className="text-muted-foreground font-medium whitespace-nowrap">金额范围:</span>
+            <Slider
+              min={0}
+              max={50000}
+              step={1000}
+              value={valueRange}
+              onValueChange={(v) => setValueRange(v as [number, number])}
+              className="flex-1"
+            />
+            <span className="text-muted-foreground whitespace-nowrap">
+              ${(valueRange[0] / 1000).toFixed(0)}K - ${(valueRange[1] / 1000).toFixed(0)}K
+            </span>
+          </div>
+          {isFiltered && (
+            <button
+              onClick={() => { setTierFilter(new Set(["A", "B", "C"])); setValueRange([0, 50000]); }}
+              className="text-primary hover:underline"
+            >
+              重置
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Kanban columns */}
       <div className="flex gap-3 overflow-x-auto pb-2">
