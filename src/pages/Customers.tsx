@@ -96,6 +96,9 @@ export default function Customers() {
   const [showFileTree, setShowFileTree] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({ email: "", phone: "", tier: "" as "A" | "B" | "C", tags: [] as string[], newTag: "" });
+  const [showAddComm, setShowAddComm] = useState(false);
+  const [communications, setCommunications] = useState(mockCommunications);
+  const [commForm, setCommForm] = useState({ type: "email" as "email" | "chat" | "call" | "meeting" | "document", direction: "outbound" as "inbound" | "outbound", subject: "", summary: "" });
 
   const filtered = customers.filter((c) => {
     const tierMatch = selectedTier === "all" || c.tier === selectedTier;
