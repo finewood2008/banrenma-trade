@@ -66,9 +66,10 @@ export default function Dashboard() {
         navigate("/inbox");
         break;
       case "automation":
+        setStrategyDrawerOpen(true);
+        break;
       case "response":
       case "satisfaction":
-        // Could open drawers/modals in the future
         toast({ title: "功能开发中", description: "详细数据面板即将上线" });
         break;
     }
