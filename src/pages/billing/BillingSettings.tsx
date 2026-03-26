@@ -2,7 +2,7 @@
  * 计费设置 - 套餐信息、提醒、上限、Agent控制
  */
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Settings, ArrowLeft, Bell, Bot, Shield, CreditCard, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,8 @@ export default function BillingSettings() {
   const [monthlyLimit, setMonthlyLimit] = useState([20000]);
   const [limitAction, setLimitAction] = useState<"pause_all" | "pause_auto" | "continue">("pause_auto");
   const [agentList, setAgentList] = useState(agents);
+
+  const navigate = useNavigate();
 
   const toggleAgent = (id: number) => {
     setAgentList(prev => prev.map(a => a.id === id ? { ...a, enabled: !a.enabled } : a));
@@ -71,9 +73,9 @@ export default function BillingSettings() {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" className="text-xs flex-1">升级套餐</Button>
-              <Button variant="outline" size="sm" className="text-xs flex-1">续费</Button>
-              <Button variant="outline" size="sm" className="text-xs flex-1">充值点数</Button>
+              <Button size="sm" className="text-xs flex-1" onClick={() => navigate("/billing/plans")}>升级套餐</Button>
+              <Button variant="outline" size="sm" className="text-xs flex-1" onClick={() => toast.success("续费功能即将上线")}>续费</Button>
+              <Button variant="outline" size="sm" className="text-xs flex-1" onClick={() => navigate("/billing")}>充值点数</Button>
             </div>
           </CardContent>
         </Card>
