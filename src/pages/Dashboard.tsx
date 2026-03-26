@@ -106,6 +106,7 @@ export default function Dashboard() {
       <motion.div variants={fadeUp}>
         <ActivityFeed activities={activities} selectedSource={selectedSource} />
       </motion.div>
+      <AIStrategyDrawer open={strategyDrawerOpen} onOpenChange={setStrategyDrawerOpen} />
     </motion.div>
   );
 }
