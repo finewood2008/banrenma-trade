@@ -89,6 +89,7 @@ const commTypeConfig: Record<string, { icon: typeof Mail; label: string; color: 
 };
 
 export default function Customers() {
+  const [activeView, setActiveView] = useState<"list" | "kanban">("list");
   const [selectedTier, setSelectedTier] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
