@@ -1,13 +1,14 @@
 /**
  * DealKanban - 商机看板视图，按阶段分列展示，支持拖拽切换阶段
  */
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import {
-  DollarSign, GripVertical, User, Building2, TrendingUp,
+  DollarSign, GripVertical, User, Building2, TrendingUp, Filter,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 
 interface KanbanDeal {
