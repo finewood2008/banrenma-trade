@@ -479,27 +479,37 @@ export default function Inbox() {
 
           {/* Compose area */}
           <div className="p-4 border-t border-border">
-            {isEmail && (
-              <div className="flex items-center gap-3 mb-2 text-[10px] text-muted-foreground">
-                <span>收件人: {selectedInquiry.email}</span>
-                <button className="flex items-center gap-1 hover:text-foreground"><Paperclip className="w-3 h-3" /> 附件</button>
+            {isEmail ? (
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <EmailRichEditor
+                    ref={emailEditorRef}
+                    recipientEmail={selectedInquiry.email}
+                    placeholder="撰写邮件回复..."
+                  />
+                </div>
+                <button onClick={handleSend}
+                  className="self-end w-9 h-9 bg-primary text-primary-foreground rounded-lg flex items-center justify-center hover:opacity-90 shrink-0">
+                  <Send className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <textarea
+                  ref={textareaRef}
+                  value={messageInput}
+                  onChange={(e) => setMessageInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                  placeholder={isSocial ? "回复私信..." : "输入回复内容..."}
+                  className="flex-1 bg-secondary rounded-lg px-3 py-2 text-xs outline-none placeholder:text-muted-foreground resize-none min-h-[60px]"
+                  rows={2}
+                />
+                <button onClick={handleSend} disabled={!messageInput.trim()}
+                  className="self-end w-9 h-9 bg-primary text-primary-foreground rounded-lg flex items-center justify-center hover:opacity-90 shrink-0 disabled:opacity-50">
+                  <Send className="w-4 h-4" />
+                </button>
               </div>
             )}
-            <div className="flex gap-2">
-              <textarea
-                ref={textareaRef}
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-                placeholder={isEmail ? "撰写邮件回复..." : isSocial ? "回复私信..." : "输入回复内容..."}
-                className="flex-1 bg-secondary rounded-lg px-3 py-2 text-xs outline-none placeholder:text-muted-foreground resize-none min-h-[60px]"
-                rows={isEmail ? 4 : 2}
-              />
-              <button onClick={handleSend} disabled={!messageInput.trim()}
-                className="self-end w-9 h-9 bg-primary text-primary-foreground rounded-lg flex items-center justify-center hover:opacity-90 shrink-0 disabled:opacity-50">
-                <Send className="w-4 h-4" />
-              </button>
-            </div>
           </div>
         </div>
       ) : (
