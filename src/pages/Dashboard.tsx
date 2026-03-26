@@ -12,6 +12,7 @@ import IntentChart from "@/components/dashboard/IntentChart";
 import ActivityFeed, { mockActivities } from "@/components/dashboard/ActivityFeed";
 import AIStrategyDrawer from "@/components/dashboard/AIStrategyDrawer";
 import ResponseTimeDialog from "@/components/dashboard/ResponseTimeDialog";
+import InquiryTrendChart from "@/components/dashboard/InquiryTrendChart";
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -98,6 +99,11 @@ export default function Dashboard() {
       {/* Stats Cards */}
       <motion.div variants={fadeUp}>
         <StatsCards stats={stats} onCardClick={handleCardClick} />
+      </motion.div>
+
+      {/* Trend Chart */}
+      <motion.div variants={fadeUp}>
+        <InquiryTrendChart />
       </motion.div>
 
       {/* Charts Row */}
