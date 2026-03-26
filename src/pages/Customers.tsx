@@ -3,6 +3,7 @@
  */
 import { useState, useRef } from "react";
 import CustomerDistributionMap from "@/components/customers/CustomerDistributionMap";
+import DealKanban from "@/components/customers/DealKanban";
 import {
   Users, Search, Filter, Star, Globe, Mail, Phone,
   Building2, ArrowUpRight, MoreHorizontal, TrendingUp,
