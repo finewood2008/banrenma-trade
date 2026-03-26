@@ -112,6 +112,7 @@ export default function EmailCreate() {
   };
 
 
+  const handleGenerate = async () => {
     setIsGenerating(true);
     await new Promise((r) => setTimeout(r, 2000));
     setSubject("5 Year Warranty LED Bulbs - Factory Direct Pricing");
