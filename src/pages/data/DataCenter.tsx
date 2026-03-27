@@ -101,7 +101,7 @@ export default function DataCenter() {
       </div>
 
       {/* Quick Actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         {[
           { icon: Archive, label: "立即备份", action: () => toast.success("备份已开始，预计3分钟完成...") },
           { icon: Download, label: "导出数据", href: "/data/export" },

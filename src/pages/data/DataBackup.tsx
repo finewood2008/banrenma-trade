@@ -150,41 +150,59 @@ export default function DataBackup() {
             <Clock className="w-3.5 h-3.5 text-primary" /> 备份历史
           </h4>
         </div>
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-border text-muted-foreground">
-              <th className="text-left px-4 py-2 font-medium">时间</th>
-              <th className="text-left px-4 py-2 font-medium">类型</th>
-              <th className="text-left px-4 py-2 font-medium">大小</th>
-              <th className="text-left px-4 py-2 font-medium">状态</th>
-              <th className="text-left px-4 py-2 font-medium">路径</th>
-              <th className="text-left px-4 py-2 font-medium">操作</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {backupHistory.map((b) => (
-              <tr key={b.id} className="hover:bg-secondary/20">
-                <td className="px-4 py-2.5 font-mono text-muted-foreground">{b.time}</td>
-                <td className="px-4 py-2.5">{b.type}</td>
-                <td className="px-4 py-2.5 text-muted-foreground">{b.size}</td>
-                <td className="px-4 py-2.5">
-                  <span className="text-brand-green flex items-center gap-0.5"><CheckCircle2 className="w-3 h-3" /> 成功</span>
-                </td>
-                <td className="px-4 py-2.5 font-mono text-[10px] text-muted-foreground">{b.path}</td>
-                <td className="px-4 py-2.5">
-                  <div className="flex gap-1">
-                    <Button size="sm" variant="ghost" className="h-6 text-[10px] px-1.5" onClick={() => toast(`正在从 ${b.path} 恢复...`)}>
-                      恢复
-                    </Button>
-                    <Button size="sm" variant="ghost" className="h-6 text-[10px] px-1.5" onClick={() => toast(`正在打开 ${b.path}`)}>
-                      查看
-                    </Button>
-                  </div>
-                </td>
+        {/* Desktop table */}
+        <div className="hidden md:block">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-border text-muted-foreground">
+                <th className="text-left px-4 py-2 font-medium">时间</th>
+                <th className="text-left px-4 py-2 font-medium">类型</th>
+                <th className="text-left px-4 py-2 font-medium">大小</th>
+                <th className="text-left px-4 py-2 font-medium">状态</th>
+                <th className="text-left px-4 py-2 font-medium">路径</th>
+                <th className="text-left px-4 py-2 font-medium">操作</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {backupHistory.map((b) => (
+                <tr key={b.id} className="hover:bg-secondary/20">
+                  <td className="px-4 py-2.5 font-mono text-muted-foreground">{b.time}</td>
+                  <td className="px-4 py-2.5">{b.type}</td>
+                  <td className="px-4 py-2.5 text-muted-foreground">{b.size}</td>
+                  <td className="px-4 py-2.5">
+                    <span className="text-brand-green flex items-center gap-0.5"><CheckCircle2 className="w-3 h-3" /> 成功</span>
+                  </td>
+                  <td className="px-4 py-2.5 font-mono text-[10px] text-muted-foreground">{b.path}</td>
+                  <td className="px-4 py-2.5">
+                    <div className="flex gap-1">
+                      <Button size="sm" variant="ghost" className="h-6 text-[10px] px-1.5" onClick={() => toast(`正在从 ${b.path} 恢复...`)}>恢复</Button>
+                      <Button size="sm" variant="ghost" className="h-6 text-[10px] px-1.5" onClick={() => toast(`正在打开 ${b.path}`)}>查看</Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {/* Mobile card list */}
+        <div className="md:hidden divide-y divide-border">
+          {backupHistory.map((b) => (
+            <div key={b.id} className="p-3 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium">{b.type}</span>
+                <span className="text-brand-green text-[10px] flex items-center gap-0.5"><CheckCircle2 className="w-3 h-3" /> 成功</span>
+              </div>
+              <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                <span className="font-mono">{b.time}</span>
+                <span>{b.size}</span>
+              </div>
+              <div className="flex gap-1.5">
+                <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2" onClick={() => toast(`正在从 ${b.path} 恢复...`)}>恢复</Button>
+                <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2" onClick={() => toast(`正在打开 ${b.path}`)}>查看</Button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
