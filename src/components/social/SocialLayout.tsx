@@ -19,7 +19,7 @@ export default function SocialLayout() {
         <h2 className="font-display font-semibold text-lg">社媒中心</h2>
         <p className="text-xs text-muted-foreground">AI辅助创作 · 多平台自动发布</p>
       </div>
-      <div className="flex gap-1 border-b border-border pb-0">
+      <div className="flex gap-1 border-b border-border pb-0 overflow-x-auto">
         {subNav.map((item) => {
           const Icon = item.icon;
           return (
