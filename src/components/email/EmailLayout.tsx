@@ -19,7 +19,7 @@ export default function EmailLayout() {
         <h2 className="font-display font-semibold text-lg">AI邮件营销</h2>
         <p className="text-xs text-muted-foreground">智能开发信 · 自动化序列 · 效果追踪</p>
       </div>
-      <div className="flex gap-1 border-b border-border pb-0">
+      <div className="flex gap-1 border-b border-border pb-0 overflow-x-auto">
         {subNav.map((item) => {
           const Icon = item.icon;
           return (
