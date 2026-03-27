@@ -3,8 +3,9 @@
  * 左侧消息列表 + 右侧对话详情 + AI回复功能
  */
 import { useState, useRef, useCallback } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
-  Search, Send, Bot, CheckCheck, Zap, RefreshCw, Loader2,
+  Search, Send, Bot, CheckCheck, Zap, RefreshCw, Loader2, ArrowLeft,
   Globe, Mail, Instagram, Facebook, Twitter, Reply, Forward,
   Paperclip, Clock, User,
 } from "lucide-react";
