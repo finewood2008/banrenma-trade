@@ -192,7 +192,7 @@ export default function ContentCalendar() {
       {/* Calendar View - Full Month Grid */}
       {view === "calendar" && (
         <div className="space-y-3">
-          <div className="bg-card border border-border rounded-xl overflow-hidden">
+          <div className="glass-panel rounded-xl overflow-hidden">
             {/* Month Header */}
             <div className="flex items-center justify-between p-3 border-b border-border">
               <button onClick={prevMonth} className="p-1 rounded-md hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
