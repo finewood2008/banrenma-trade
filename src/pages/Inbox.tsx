@@ -76,6 +76,7 @@ const mockConversations: Record<number, ChatMessage[]> = {
 };
 
 export default function Inbox() {
+  const isMobile = useIsMobile();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [activeChannel, setActiveChannel] = useState<InquiryChannel | "全部">("全部");
   const [messageInput, setMessageInput] = useState("");
