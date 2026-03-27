@@ -65,7 +65,7 @@ function AgentDetail({ agent, onClose }: { agent: typeof agentConsumption[0]; on
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-center justify-center bg-background/60 backdrop-blur-sm" onClick={onClose}>
-      <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="w-full max-w-2xl bg-card border border-border rounded-xl p-6 shadow-xl" onClick={e => e.stopPropagation()}>
+      <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="w-full max-w-2xl mx-4 bg-card border border-border rounded-xl p-4 md:p-6 shadow-xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: agent.color + "22" }}>
@@ -290,17 +290,17 @@ export default function BillingCenter() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h1 className="text-xl font-display font-bold text-foreground flex items-center gap-2">
             <Coins className="w-5 h-5 text-primary" /> 消费中心
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">透明计费 · 实时监控 · 灵活控制</p>
         </div>
-        <div className="flex gap-2">
-          <Link to="/billing/settings"><Button variant="outline" size="sm" className="text-xs gap-1"><Settings className="w-3.5 h-3.5" /> 计费设置</Button></Link>
-          <Link to="/billing/invoice"><Button variant="outline" size="sm" className="text-xs gap-1"><FileText className="w-3.5 h-3.5" /> 账单详情</Button></Link>
-          <Button size="sm" className="text-xs gap-1" onClick={() => setShowRecharge(true)}><CreditCard className="w-3.5 h-3.5" /> 充值点数</Button>
+        <div className="flex gap-2 flex-wrap">
+          <Link to="/billing/settings"><Button variant="outline" size="sm" className="text-xs gap-1"><Settings className="w-3.5 h-3.5" /> 设置</Button></Link>
+          <Link to="/billing/invoice"><Button variant="outline" size="sm" className="text-xs gap-1"><FileText className="w-3.5 h-3.5" /> 账单</Button></Link>
+          <Button size="sm" className="text-xs gap-1" onClick={() => setShowRecharge(true)}><CreditCard className="w-3.5 h-3.5" /> 充值</Button>
         </div>
       </div>
 

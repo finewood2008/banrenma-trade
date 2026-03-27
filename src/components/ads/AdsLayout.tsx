@@ -18,7 +18,7 @@ export default function AdsLayout() {
         <h2 className="font-display font-semibold text-lg">广告投放</h2>
         <p className="text-xs text-muted-foreground">AI自动优化 · 人工审核协作</p>
       </div>
-      <div className="flex gap-1 border-b border-border pb-0">
+      <div className="flex gap-1 border-b border-border pb-0 overflow-x-auto">
         {subNav.map((item) => {
           const Icon = item.icon;
           return (
@@ -28,7 +28,7 @@ export default function AdsLayout() {
               end
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-t-md transition-colors border-b-2 -mb-px",
+                  "flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-t-md transition-colors border-b-2 -mb-px whitespace-nowrap shrink-0",
                   isActive
                     ? "border-primary text-primary bg-primary/5"
                     : "border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/50"

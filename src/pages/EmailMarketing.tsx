@@ -42,13 +42,13 @@ const emailSequence = [
 export default function EmailMarketing() {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h2 className="font-display font-semibold text-lg">AI EDM邮件营销</h2>
           <p className="text-xs text-muted-foreground">AI Email Marketing · 智能开发信与自动化跟进序列</p>
         </div>
         <button onClick={() => toast("AI邮件生成功能即将上线", { description: "Feature coming soon" })}
-          className="flex items-center gap-1.5 text-sm font-medium bg-primary text-primary-foreground px-4 py-2 rounded-md hover:opacity-90 transition-opacity">
+          className="flex items-center gap-1.5 text-sm font-medium bg-primary text-primary-foreground px-4 py-2 rounded-md hover:opacity-90 transition-opacity self-start">
           <Sparkles className="w-4 h-4" /> AI生成开发信
         </button>
       </div>
@@ -89,7 +89,7 @@ export default function EmailMarketing() {
                   <span className="text-[10px] text-muted-foreground">{typeLabels[c.type]}</span>
                 </div>
                 {c.sent > 0 && (
-                  <div className="flex gap-4 mt-2 text-[10px] text-muted-foreground">
+                  <div className="flex gap-3 md:gap-4 mt-2 text-[10px] text-muted-foreground flex-wrap">
                     <span className="flex items-center gap-1"><Send className="w-3 h-3" /> {c.sent} 发送</span>
                     <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {openRate}% 打开</span>
                     <span className="flex items-center gap-1"><MousePointerClick className="w-3 h-3" /> {c.clicked} 点击</span>

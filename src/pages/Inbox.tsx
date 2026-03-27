@@ -3,8 +3,9 @@
  * 左侧消息列表 + 右侧对话详情 + AI回复功能
  */
 import { useState, useRef, useCallback } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
-  Search, Send, Bot, CheckCheck, Zap, RefreshCw, Loader2,
+  Search, Send, Bot, CheckCheck, Zap, RefreshCw, Loader2, ArrowLeft,
   Globe, Mail, Instagram, Facebook, Twitter, Reply, Forward,
   Paperclip, Clock, User,
 } from "lucide-react";
@@ -75,6 +76,7 @@ const mockConversations: Record<number, ChatMessage[]> = {
 };
 
 export default function Inbox() {
+  const isMobile = useIsMobile();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [activeChannel, setActiveChannel] = useState<InquiryChannel | "全部">("全部");
   const [messageInput, setMessageInput] = useState("");
@@ -231,9 +233,12 @@ export default function Inbox() {
   const chCfg = selectedInquiry ? channelConfig[selectedInquiry.channel] : null;
 
   return (
-    <div className="flex h-[calc(100vh-7rem)] gap-0 -m-4 lg:-m-6">
+    <div className="flex h-[calc(100vh-7rem)] gap-0 -m-3 md:-m-4 lg:-m-6">
       {/* Left: Inquiry list */}
-      <div className="w-80 lg:w-96 border-r border-border flex flex-col shrink-0">
+      <div className={cn(
+        "border-r border-border flex flex-col shrink-0",
+        isMobile ? (selectedId ? "hidden" : "w-full") : "w-80 lg:w-96"
+      )}>
         <div className="p-4 border-b border-border">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-display font-semibold text-base">询盘中心</h2>
@@ -297,20 +302,25 @@ export default function Inbox() {
 
       {/* Right: Detail */}
       {selectedInquiry && chCfg ? (
-        <div className="flex-1 flex flex-col">
+        <div className={cn("flex-1 flex flex-col", isMobile && !selectedId && "hidden")}>
           {/* Header */}
-          <div className="p-4 border-b border-border flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center text-sm font-semibold text-primary">{selectedInquiry.avatar}</div>
-              <div>
-                <div className="text-sm font-medium">{selectedInquiry.name} · <span className="text-muted-foreground">{selectedInquiry.company}</span></div>
+          <div className="p-3 md:p-4 border-b border-border flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 md:gap-3 min-w-0">
+              {isMobile && (
+                <button onClick={() => setSelectedId(null)} className="w-8 h-8 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground shrink-0">
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+              )}
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/15 flex items-center justify-center text-xs md:text-sm font-semibold text-primary shrink-0">{selectedInquiry.avatar}</div>
+              <div className="min-w-0">
+                <div className="text-xs md:text-sm font-medium truncate">{selectedInquiry.name} · <span className="text-muted-foreground">{selectedInquiry.company}</span></div>
                 <div className={cn("text-[10px] flex items-center gap-1", chCfg.color)}>
-                  {chCfg.icon} {chCfg.label} · 最后活跃: {selectedInquiry.time}
+                  {chCfg.icon} {chCfg.label} · {selectedInquiry.time}
                 </div>
               </div>
             </div>
-            <button className="text-xs bg-secondary text-foreground px-3 py-1.5 rounded-md hover:bg-secondary/80 transition-colors flex items-center gap-1.5">
-              <Bot className="w-3 h-3" /> AI分析
+            <button className="text-xs bg-secondary text-foreground px-2 md:px-3 py-1.5 rounded-md hover:bg-secondary/80 transition-colors flex items-center gap-1 shrink-0">
+              <Bot className="w-3 h-3" /> <span className="hidden sm:inline">AI分析</span>
             </button>
           </div>
 
@@ -513,7 +523,7 @@ export default function Inbox() {
           </div>
         </div>
       ) : (
-        <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">选择一条询盘查看详情</div>
+        <div className={cn("flex-1 flex items-center justify-center text-muted-foreground text-sm", isMobile && "hidden")}>选择一条询盘查看详情</div>
       )}
     </div>
   );

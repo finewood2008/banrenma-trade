@@ -135,34 +135,52 @@ export default function DataExport() {
             <Clock className="w-3.5 h-3.5 text-primary" /> 导出历史
           </h4>
         </div>
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-border text-muted-foreground">
-              <th className="text-left px-4 py-2 font-medium">时间</th>
-              <th className="text-left px-4 py-2 font-medium">数据</th>
-              <th className="text-left px-4 py-2 font-medium">格式</th>
-              <th className="text-left px-4 py-2 font-medium">大小</th>
-              <th className="text-left px-4 py-2 font-medium">路径</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {exportHistory.map((h) => (
-              <tr key={h.id} className="hover:bg-secondary/20">
-                <td className="px-4 py-2.5 font-mono text-muted-foreground">{h.time}</td>
-                <td className="px-4 py-2.5">{h.data}</td>
-                <td className="px-4 py-2.5">
-                  <Badge variant="secondary" className="text-[9px]">{h.format}</Badge>
-                </td>
-                <td className="px-4 py-2.5 text-muted-foreground">{h.size}</td>
-                <td className="px-4 py-2.5">
-                  <button className="text-[10px] font-mono text-brand-cyan hover:underline" onClick={() => toast(`正在打开 ${h.path}`)}>
-                    {h.path}
-                  </button>
-                </td>
+        {/* Desktop table */}
+        <div className="hidden md:block">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-border text-muted-foreground">
+                <th className="text-left px-4 py-2 font-medium">时间</th>
+                <th className="text-left px-4 py-2 font-medium">数据</th>
+                <th className="text-left px-4 py-2 font-medium">格式</th>
+                <th className="text-left px-4 py-2 font-medium">大小</th>
+                <th className="text-left px-4 py-2 font-medium">路径</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {exportHistory.map((h) => (
+                <tr key={h.id} className="hover:bg-secondary/20">
+                  <td className="px-4 py-2.5 font-mono text-muted-foreground">{h.time}</td>
+                  <td className="px-4 py-2.5">{h.data}</td>
+                  <td className="px-4 py-2.5">
+                    <Badge variant="secondary" className="text-[9px]">{h.format}</Badge>
+                  </td>
+                  <td className="px-4 py-2.5 text-muted-foreground">{h.size}</td>
+                  <td className="px-4 py-2.5">
+                    <button className="text-[10px] font-mono text-brand-cyan hover:underline" onClick={() => toast(`正在打开 ${h.path}`)}>
+                      {h.path}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {/* Mobile card list */}
+        <div className="md:hidden divide-y divide-border">
+          {exportHistory.map((h) => (
+            <div key={h.id} className="p-3 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium">{h.data}</span>
+                <Badge variant="secondary" className="text-[9px]">{h.format}</Badge>
+              </div>
+              <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                <span className="font-mono">{h.time}</span>
+                <span>{h.size}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
