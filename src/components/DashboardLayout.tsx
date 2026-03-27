@@ -57,6 +57,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [collapsed, setCollapsed] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [sidebarGlow, setSidebarGlow] = useState({ x: 0, y: 0, visible: false });
+
+  const handleSidebarMouseMove = useCallback((e: React.MouseEvent) => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    setSidebarGlow({ x: e.clientX - rect.left, y: e.clientY - rect.top, visible: true });
+  }, []);
+
+  const handleSidebarMouseLeave = useCallback(() => {
+    setSidebarGlow((prev) => ({ ...prev, visible: false }));
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
