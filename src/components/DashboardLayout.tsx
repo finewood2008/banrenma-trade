@@ -17,6 +17,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import AgentStatusPanel from "./AgentStatusPanel";
 import PointsStatusBar from "./PointsStatusBar";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import logoImg from "@/assets/logo.png";
 
 interface NavItem {
   icon: React.ElementType;
