@@ -523,7 +523,7 @@ export default function Inbox() {
           </div>
         </div>
       ) : (
-        <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">选择一条询盘查看详情</div>
+        <div className={cn("flex-1 flex items-center justify-center text-muted-foreground text-sm", isMobile && "hidden")}>选择一条询盘查看详情</div>
       )}
     </div>
   );
