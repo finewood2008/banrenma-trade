@@ -290,17 +290,17 @@ export default function BillingCenter() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h1 className="text-xl font-display font-bold text-foreground flex items-center gap-2">
             <Coins className="w-5 h-5 text-primary" /> 消费中心
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">透明计费 · 实时监控 · 灵活控制</p>
         </div>
-        <div className="flex gap-2">
-          <Link to="/billing/settings"><Button variant="outline" size="sm" className="text-xs gap-1"><Settings className="w-3.5 h-3.5" /> 计费设置</Button></Link>
-          <Link to="/billing/invoice"><Button variant="outline" size="sm" className="text-xs gap-1"><FileText className="w-3.5 h-3.5" /> 账单详情</Button></Link>
-          <Button size="sm" className="text-xs gap-1" onClick={() => setShowRecharge(true)}><CreditCard className="w-3.5 h-3.5" /> 充值点数</Button>
+        <div className="flex gap-2 flex-wrap">
+          <Link to="/billing/settings"><Button variant="outline" size="sm" className="text-xs gap-1"><Settings className="w-3.5 h-3.5" /> 设置</Button></Link>
+          <Link to="/billing/invoice"><Button variant="outline" size="sm" className="text-xs gap-1"><FileText className="w-3.5 h-3.5" /> 账单</Button></Link>
+          <Button size="sm" className="text-xs gap-1" onClick={() => setShowRecharge(true)}><CreditCard className="w-3.5 h-3.5" /> 充值</Button>
         </div>
       </div>
 
