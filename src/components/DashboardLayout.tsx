@@ -81,7 +81,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
               <Zap className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
-            <span className="font-display font-semibold text-sm text-foreground">半人马AI</span>
+            <span className="font-display font-semibold text-sm text-foreground">半人马AI（DEMO）</span>
           </div>
           <div className="flex items-center gap-1">
             <PointsStatusBar />
@@ -103,7 +103,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       <Zap className="w-4 h-4 text-primary-foreground" />
                     </div>
                     <div>
-                      <div className="font-display font-semibold text-sm">半人马AI</div>
+                      <div className="font-display font-semibold text-sm">半人马AI（DEMO）</div>
                       <div className="text-[10px] text-muted-foreground">外贸OPC超级工作台</div>
                     </div>
                   </div>
@@ -221,7 +221,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
           {!collapsed && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="overflow-hidden">
-              <div className="font-display font-semibold text-sm text-foreground whitespace-nowrap">半人马AI</div>
+              <div className="font-display font-semibold text-sm text-foreground whitespace-nowrap">半人马AI（DEMO）</div>
               <div className="text-[10px] text-muted-foreground whitespace-nowrap">外贸OPC超级工作台</div>
             </motion.div>
           )}
