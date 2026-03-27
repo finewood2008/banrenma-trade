@@ -3,7 +3,7 @@
  * 桌面：左侧紧凑导航 + 顶部状态栏 + 主内容区
  * 移动：底部Tab导航 + 简化顶栏
  */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Inbox, Share2, Megaphone, Mail,
